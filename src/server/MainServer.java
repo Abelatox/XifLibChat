@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainServer implements Runnable {
-	
+
 	static final int PORT = 9876;
-	
+
 	// Tots els clients
 	static ArrayList<Socket> clients = new ArrayList<Socket>();
-	
+
 	// Socket del server
 	static ServerSocket svSocket;
 

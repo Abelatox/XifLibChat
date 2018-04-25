@@ -1,53 +1,70 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import xiflib.XifLib;
 
-public class MainClient extends Thread {
+public class MainClient implements Runnable{
+	Socket socket;
+	static String nick;
 
-	private Scanner sc = new Scanner(System.in);
-	private XifLib xifLib = new XifLib();
+	static XifLib xiflib = new XifLib();
+	
+	public MainClient(Socket server) {
+		this.socket = server;
+	}
 
 	@Override
 	public void run() {
-
-		String sMissatge;
-		sMissatge = sc.nextLine();
-
-		String sMissatgeXifrat;
-		sMissatgeXifrat = xifLib.xifrar(sMissatge);
-
-		out.println(sMissatgeXifrat);
-		out.flush();
-
-	}
-
-	private static final int _PORT = 9876;
-	private static final String _IP = "192.168.19.99";
-	private static Socket sktClient;
-	private static PrintWriter out;
-
-	public static void main(String args[]) {
-
+		System.out.println("Connexió establerta, xat obert");
+		PrintWriter out;
 		try {
-			sktClient = new Socket(_IP, _PORT);
-			out = new PrintWriter(sktClient.getOutputStream(), true);
-			while (true) {
-
-				((RebreMissatge) new RebreMissatge(sktClient)).start();
-				((MainClient) new MainClient()).start();
-
+			while(true) {
+				//Sempre pot escriure 
+				String msg = new Scanner(System.in).nextLine();//"This is the first message for TCP/IP comm.";
+				//Afegeix el nick al missatge
+				msg = "<"+nick+"> "+xiflib.xifrar(msg);
+				//Envia el missatge al servidor
+				out = new PrintWriter(socket.getOutputStream(), true);
+				out.println(msg);
 			}
-		} catch (Exception e) {
-			e.getStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
-
+	
+	public static void main(String[] args) {
+		System.out.print("Nick: ");
+		nick = new Scanner(System.in).nextLine();
+		
+		try {
+			//Estableix connexió amb el servidor
+			Socket server = new Socket("192.168.17.134",9876);
+			//Agafa el BufferedReader dels missatges provinents del servidor
+	        BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+	        //Comença el thread per enviar missatges al servidor
+	        new Thread(new MainClient(server)).start();
+	        //Sempre està esperant missatges del servidor
+	        while(true) {
+	        	//Fins que no hi hagi un missatge del servidor espera
+	        	while(!in.ready()) {}
+	        	String msg = in.readLine();
+	        	if(!msg.contains("<"+nick+"> ")) {
+	        		//Imprimeix el missatge
+	        		System.out.println(xiflib.xifrar(msg));
+	        	}
+	        }
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}	
 }
+
