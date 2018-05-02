@@ -94,7 +94,7 @@ public class MainServer implements Runnable {
 					// L'afegeix a la llista de clients
 					clients.add(socket);
 					System.out.println("Added client " + socket.getInetAddress() + ":" + socket.getPort());
-					sendAll(xiflib.xifrar(socket.getInetAddress() + ":" + socket.getPort() + " ha entrat al xat"));
+					sendAll(xiflib.xifrar(socket.getInetAddress() + ":" + socket.getPort() + " HA ENTRAT AL XAT."));
 					// Comença un nou thread per comunicar-se amb el client assignat
 					new Thread(new MainServer(socket)).start();
 				} catch (IOException e) {

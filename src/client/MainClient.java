@@ -14,8 +14,8 @@ public class MainClient implements Runnable{
 	Socket socket;
 	static String nick;
 	
-	static String IP = "192.168.19.106";
-	//static String IP = "localhost";
+	//static String IP = "192.168.19.106";
+	static String IP = "localhost";
 	static int PORT = 9876;
 
 	static XifLib xiflib = new XifLib();
@@ -36,6 +36,7 @@ public class MainClient implements Runnable{
 				msg = "<"+nick+"> "+msg;
 				//Envia el missatge al servidor
 				out = new PrintWriter(socket.getOutputStream(), true);
+				msg = msg.toUpperCase();
 				out.println(xiflib.xifrar(msg));
 			}
 		} catch (IOException e) {
@@ -61,7 +62,8 @@ public class MainClient implements Runnable{
 	        	String msg = in.readLine();
 	        	if(!msg.contains("<"+nick+"> ")) {
 	        		//Imprimeix el missatge
-	        		System.out.println(xiflib.xifrar(msg));
+	        		String missatge = xiflib.xifrar(msg);
+	        		System.out.println(missatge);
 	        	}
 	        }
 		} catch (UnknownHostException e) {
