@@ -52,7 +52,7 @@ public class MainServer implements Runnable {
 				Date date = new Date();
 				msg = xiflib.xifrar("[" + dateFormat.format(date) + "] ") +msg;
 				// Mostra el msg i l'envia
-				System.out.println(msg);
+				System.out.println(xiflib.xifrar(msg));
 				sendAll(msg);
 
 			} catch (IOException e) {
