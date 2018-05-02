@@ -11,9 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import xiflib.XifLib;
+
 public class MainServer implements Runnable {
 
 	static final int PORT = 9876;
+
+	static XifLib xiflib = new XifLib();
 
 	// Tots els clients
 	static ArrayList<Socket> clients = new ArrayList<Socket>();
@@ -46,7 +50,7 @@ public class MainServer implements Runnable {
 				String msg = in.readLine();
 				// Formateja la data dins el missatge
 				Date date = new Date();
-				msg = "[" + dateFormat.format(date) + "] " + msg;
+				msg = xiflib.xifrar("[" + dateFormat.format(date) + "] ") +msg;
 				// Mostra el msg i l'envia
 				System.out.println(msg);
 				sendAll(msg);
@@ -83,7 +87,6 @@ public class MainServer implements Runnable {
 			// Obre un sol cop el port per al ServerSocket
 			svSocket = new ServerSocket(PORT);
 
-			//
 			while (true) {
 				try {
 					// Accepta el client
@@ -91,7 +94,7 @@ public class MainServer implements Runnable {
 					// L'afegeix a la llista de clients
 					clients.add(socket);
 					System.out.println("Added client " + socket.getInetAddress() + ":" + socket.getPort());
-					sendAll(socket.getInetAddress() + ":" + socket.getPort() + " ha entrat al xat");
+					sendAll(xiflib.xifrar(socket.getInetAddress() + ":" + socket.getPort() + " ha entrat al xat"));
 					// Comença un nou thread per comunicar-se amb el client assignat
 					new Thread(new MainServer(socket)).start();
 				} catch (IOException e) {

@@ -13,6 +13,10 @@ import xiflib.XifLib;
 public class MainClient implements Runnable{
 	Socket socket;
 	static String nick;
+	
+	static String IP = "192.168.19.106";
+	//static String IP = "localhost";
+	static int PORT = 9876;
 
 	static XifLib xiflib = new XifLib();
 	
@@ -29,10 +33,10 @@ public class MainClient implements Runnable{
 				//Sempre pot escriure 
 				String msg = new Scanner(System.in).nextLine();//"This is the first message for TCP/IP comm.";
 				//Afegeix el nick al missatge
-				msg = "<"+nick+"> "+xiflib.xifrar(msg);
+				msg = "<"+nick+"> "+msg;
 				//Envia el missatge al servidor
 				out = new PrintWriter(socket.getOutputStream(), true);
-				out.println(msg);
+				out.println(xiflib.xifrar(msg));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -45,7 +49,7 @@ public class MainClient implements Runnable{
 		
 		try {
 			//Estableix connexió amb el servidor
-			Socket server = new Socket("192.168.17.134",9876);
+			Socket server = new Socket(IP,PORT);
 			//Agafa el BufferedReader dels missatges provinents del servidor
 	        BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
 	        //Comença el thread per enviar missatges al servidor
