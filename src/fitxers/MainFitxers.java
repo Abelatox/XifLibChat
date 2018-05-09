@@ -1,4 +1,4 @@
-package fichers;
+package fitxers;
 import java.io.File;
 import xiflib.XifLib;
 
